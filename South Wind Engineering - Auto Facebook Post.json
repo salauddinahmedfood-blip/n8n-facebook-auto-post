@@ -1,0 +1,515 @@
+{
+  "name": "South Wind Engineering - Auto Facebook Post",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional Bengali social media copywriter for **Tumpa’s Treasure Box**, a beauty, skincare, and cosmetics brand in Bangladesh.\n\nPage Information:\n\n* Brand Name: Tumpa’s Treasure Box\n* Category: Beauty, Cosmetic & Personal Care\n* Brand Message: Authentic beauty and skincare products with nationwide delivery across Bangladesh.\n* Target Audience: Beauty lovers, skincare enthusiasts, women looking for trusted cosmetics and self-care products.\n* Key Selling Points:\n\n  * 100% genuine products\n  * Cash on Delivery (COD) available\n  * Nationwide delivery\n  * Friendly customer support through Messenger\n  * Trusted beauty and skincare recommendations\n\nPreviously used topics:\n{{ $json.previousTopics || \"None\" }}\n\nRequirements:\n\n* Write only in Bengali.\n* Create a unique Facebook post.\n* Do not repeat previous topics, headlines, or wording.\n* Choose one topic from: Skincare Tips, Makeup Tips, Product Benefits, Beauty Routine, Seasonal Skincare, Self-Care, Customer Experience, Beauty Trends, Cosmetic Essentials, Healthy Skin Habits, Beauty Myths, Makeup Hacks, Product Recommendations, Glow-Up Tips, Beauty Awareness.\n* Write a strong attention-grabbing headline.\n* Write 100-200 words of engaging content.\n* Include relevant beauty-related emojis.\n* Highlight at least one of the brand’s key selling points naturally.\n* Include a call-to-action encouraging users to message the page or place an order.\n* Include 8-15 relevant hashtags.\n* Make the content sound professional, trustworthy, and human-written.\n* Do not mention AI.\n* Do not use quotation marks.\n* Include line breaks for readability.\n\nOutput only the Facebook post.\n### Content Uniqueness & Previous Post Validation\n\nBefore generating a new Facebook post, carefully review all topics, headlines, and post content retrieved from the connected Google Sheet containing previously published posts.\n\nRules:\n\n* Treat the Google Sheet as the source of historical content.\n* Analyze previous topics, headlines, keywords, hooks, and writing styles before creating a new post.\n* Never generate a post that is identical or substantially similar to any previous post.\n* Do not reuse the same headline, opening hook, structure, examples, or call-to-action.\n* If a topic has already been used, approach it from a completely different angle and provide new insights.\n* Avoid repeating the same wording, phrases, sentence patterns, and hashtag combinations.\n* Generate fresh content every time, even when discussing related subjects.\n* Ensure that no two posts look or read alike.\n* Prioritize content diversity, originality, and audience engagement.\n* If a proposed topic is too similar to a previous post, automatically select a different topic or create a unique perspective before writing.\n\nYour goal is to make every Facebook post feel new, valuable, and distinct from all previously published content stored in the Google Sheet.\n{{ $json.previousPosts.join('\\n\\n') }}",
+        "options": {
+          "systemMessage": "You are a professional Bengali Facebook content creator for **Tumpa’s Treasure Box**, a trusted beauty, skincare, and cosmetics brand in Bangladesh.\n\n### Brand Focus Areas\n\n* Skincare Tips\n* Makeup Tips\n* Beauty Essentials\n* Self-Care & Wellness\n* Product Benefits\n* Beauty Trends\n* Seasonal Skincare\n* Makeup Tutorials & Hacks\n* Healthy Skin Habits\n* Customer Experiences\n* Beauty Awareness\n* Product Recommendations\n* Glow-Up Tips\n* Daily Beauty Routines\n* Cosmetic Education\n\n### Content Guidelines\n\n* Write only in **Bengali**.\n* Generate a unique and engaging Facebook post.\n* Return only the Facebook post content.\n* Do not include explanations, titles, labels, notes, or markdown formatting.\n* Ensure every post is different in topic, wording, and structure.\n* Use a friendly, professional, and trustworthy tone.\n* Create content that educates, inspires, or helps beauty and skincare enthusiasts.\n* Focus on beauty, skincare, cosmetics, self-care, and confidence-building topics.\n* Use relevant beauty-related emojis naturally to increase engagement.\n* Highlight authenticity, quality, convenience, and customer satisfaction where appropriate.\n* Mention key brand benefits naturally, such as:\n\n  * 100% genuine products\n  * Cash on Delivery (COD)\n  * Nationwide delivery\n  * Responsive customer support\n* Keep content relatable and suitable for Facebook audiences in Bangladesh.\n* Do not mention AI, automation, or generated content.\n\n### Call to Action\n\nEncourage readers to:\n\n* Send a message to the page\n* Place an order\n* Learn more about the featured beauty or skincare topic\n* Explore recommended products\n\n### Brand Information\n\n**Tumpa’s Treasure Box**\n💄 Beauty, Cosmetics & Personal Care\n🚚 Nationwide Delivery Available\n💵 Cash on Delivery (COD)\n💬 Message anytime to place your order\n✅ 100% Genuine Products\n\n### Hashtags\n\nInclude relevant beauty, skincare, makeup, self-care, and cosmetics hashtags at the end of the post.\n\n### Output\n\nReturn only the completed Facebook post in Bengali.\nBefore generating any Facebook post, analyze all previous posts provided in the conversation.\n\nNever create duplicate or highly similar content.\n\nDo not reuse:\n- Headlines\n- Opening hooks\n- Post structure\n- Key talking points\n- CTA wording\n- Hashtag combinations\n\nIf a previous topic has already been used, create a completely different angle and perspective.\n\nEvery generated post must be unique and clearly distinguishable from previous posts.\n\nCompare the new post against the provided post history and ensure maximum originality before generating the final result.\n\nReturn only the Facebook post content in Bengali.",
+          "maxIterations": 10
+        }
+      },
+      "id": "e7e222a8-2045-4406-a985-fa1c773a20ac",
+      "name": "Generate Bengali Post",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        848,
+        -1568
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v25.0",
+        "node": "661735163688019",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $(\"Extract Topic and Post\").item.json.postContent }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "4223453f-1eae-4fc0-9bf6-a3c1458bd665",
+      "name": "Post to Facebook Page",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        -1664
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cHNM3ymePTlxmQIW",
+          "name": "Facebook Graph account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9,12,15,18,21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "bc8d874f-7fa5-4b19-917b-48783db72848",
+      "name": "Schedule 5 Times Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        -1568
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU",
+          "mode": "list",
+          "cachedResultName": "facebook auto post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "3ddb005a-0356-4d29-82cd-a70038d78eab",
+      "name": "Read Previous Topics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -1872
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oVVlyYeIwAH9CZ49",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "previousTopics",
+              "value": "={{ $input.all().map(item => item.json.topic).join(\", \") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "63ea7c5d-92a2-463a-9276-16fad4727a4c",
+      "name": "Prepare Topics List",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        -1568
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "postContent",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "topic",
+              "value": "={{ $json.output.split(\"\\n\")[0].replace(/[🏡🏗️🏠🎨🔧💡📐✨🌟⚡🏢🛠️👷‍♂️📊💰🎯]/g, \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3f60908e-f367-4514-b75e-9a13948440bf",
+      "name": "Extract Topic and Post",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        -1664
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU",
+          "mode": "list",
+          "cachedResultName": "facebook auto post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "topic": "={{ $(\"Extract Topic and Post\").item.json.topic }}",
+            "timestamp": "={{ $(\"Extract Topic and Post\").item.json.timestamp }}",
+            "postContent": "={{ $(\"Extract Topic and Post\").item.json.postContent }}",
+            "imagePrompt": "={{ $(\"Extract Topic and Post\").item.json.imagePrompt }}"
+          },
+          "matchingColumns": [
+            "postContent"
+          ],
+          "schema": [
+            {
+              "id": "postContent",
+              "displayName": "postContent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "imagePrompt",
+              "displayName": "imagePrompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "finishReason",
+              "displayName": "finishReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "index",
+              "displayName": "index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "imageUrl",
+              "displayName": "imageUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1ec4f922-ad22-4f20-b444-f5e568ea1cc7",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1648,
+        -1664
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oVVlyYeIwAH9CZ49",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        944,
+        -1344
+      ],
+      "id": "f81cea47-6b5a-4708-9f7d-fd9186d1a325",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        752,
+        -1344
+      ],
+      "id": "c1e38a3f-95d7-462d-9751-8982228072e4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "4eSPhpHXx0UTvv7l",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7694870417",
+        "text": "=✅ Facebook Post Published Successfully!\n\n📅 Time: {{ $(\"Extract Topic and Post\").item.json.timestamp }}\n📝 Topic: {{ $(\"Extract Topic and Post\").item.json.topic }}\n\n📄 Post Preview:\n{{ $(\"Extract Topic and Post\").item.json.postContent.substring(0, 200) }}...",
+        "additionalFields": {}
+      },
+      "id": "e15c8c22-299c-4e4e-aeb2-ce99ed35e406",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1872,
+        -1664
+      ],
+      "webhookId": "b7df2fb9-5d2f-451b-98e9-da64f9f8bf20",
+      "credentials": {
+        "telegramApi": {
+          "id": "nBTJJT3AmolHsrBr",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU",
+          "mode": "list",
+          "cachedResultName": "facebook auto post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15E31YkUT3z8T8zLCuS8-a_69beCUz9Gmvn2PNL0BukU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -1360
+      ],
+      "id": "ab21d76d-b896-4b96-b50f-607f24391904",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "oVVlyYeIwAH9CZ49",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Generate Bengali Post": {
+      "main": [
+        [
+          {
+            "node": "Extract Topic and Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Schedule 5 Times Daily": {
+      "main": [
+        [
+          {
+            "node": "Prepare Topics List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Previous Topics": {
+      "main": [
+        []
+      ]
+    },
+    "Prepare Topics List": {
+      "main": [
+        [
+          {
+            "node": "Generate Bengali Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Topic and Post": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Facebook Page": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Generate Bengali Post",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Bengali Post",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Bengali Post",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "687b8b3b-8073-41f4-a342-3a5c414ac77b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4487c0c42efca78ed093211bd912446c9fae593d6fba6c79de8fdf314e94a666"
+  },
+  "id": "E9Ptr7OTWcuWwHEy",
+  "tags": []
+}
